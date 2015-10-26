@@ -1,11 +1,14 @@
 <?php
-class DbMemcache{
 
-    protected  $mem;
+class DbMemcache
+{
 
-    public function __construct($host,$port){
+    protected $mem;
+
+    public function __construct($host, $port)
+    {
         $this->mem = new Memcache();
-        $this->mem->connect($host,$port);
+        $this->mem->connect($host, $port);
     }
 
     /**
@@ -16,8 +19,9 @@ class DbMemcache{
      * @param bool $flag
      * @return boolean
      */
-    public function set($key,$value,$expireTime=0,$flag=false){
-        return $this->mem->set($key,$value,$flag,$expireTime);
+    public function set($key, $value, $expireTime = 0, $flag = false)
+    {
+        return $this->mem->set($key, $value, $flag, $expireTime);
     }
 
     /**
@@ -25,7 +29,8 @@ class DbMemcache{
      * @param $key
      * @return string
      */
-    public function get($key){
+    public function get($key)
+    {
         return $this->mem->get($key);
     }
 
@@ -34,15 +39,17 @@ class DbMemcache{
      * @param string $key
      * @return boolean
      */
-    public function delete($key){
-        return $this->mem->get($key);
+    public function delete($key)
+    {
+        return $this->mem->delete($key);
     }
 
     /**
      * 清除数据库中所有元素
      * @return boolean
      */
-    public function flush(){
+    public function flush()
+    {
         return $this->mem->flush();
     }
 
@@ -50,7 +57,8 @@ class DbMemcache{
      * 获取服务器的运行状态
      * @return boolean
      */
-    public function getStatus(){
+    public function getStatus()
+    {
         return $this->mem->getstats();
     }
 
@@ -60,8 +68,9 @@ class DbMemcache{
      * @param int $value
      * @return int
      */
-    public function decrement($key,$value=1){
-        return $this->mem->decrement($key,$value);
+    public function decrement($key, $value = 1)
+    {
+        return $this->mem->decrement($key, $value);
     }
 
     /**
@@ -70,7 +79,8 @@ class DbMemcache{
      * @param int $value
      * @return int
      */
-    public function increment($key,$value=1){
-        return $this->mem->decrement($key,$value);
+    public function increment($key, $value = 1)
+    {
+        return $this->mem->increment($key, $value);
     }
 }
