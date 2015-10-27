@@ -79,39 +79,130 @@ class DbMysqlPdo
     }
 
     /**
-     * 通过给定的条件删除数据 成功返回影响的行数
-     * @param $table
-     * @param $whereArr
-     * @param $debug
+     * 删除数据 成功返回影响的行数
+     * @param $table  表名
+     * @param $whereArr where 条件
+     * @param bool $debug 是否开启调试模式
+     * @return array|int|string
      */
-    public function deleteData($table, $whereArr, $debug)
+    public function deleteData($table, $whereArr, $debug = false)
     {
-        $keyStr = '';
-        $keyArr = [];
-        $bindKeyStr = '';
-        $bindArrKey = [];
+        $this->checkParams(['table', 'where'], 'empty');
+        $this->setTable($table);
+        $whereStr = '';
+        $whereArrNew = [];
         $bindArr = [];
         foreach ($whereArr as $key => $value) {
             $bingKey = ":" . $key;
-            $bindArrKey[] = $bingKey;
-
+            $whereArrNew[] = $key . '=' . $bingKey;
             $bindArr[$bingKey] = $value;
+        }
+        $whereStr = implode(' and ', $whereArrNew);
+
+        $sql = "DELETE FROM {$this->table} WHERE " . $whereStr;
+
+        if ($debug) {
+            return $sql;
+        } else {
+            $pdoStatement = $this->db->prepare($sql);
+            $deleteStatus = $pdoStatement->execute($bindArr);
+            if ($deleteStatus) {
+                return $pdoStatement->rowCount();
+            } else {
+                return $pdoStatement->errorInfo();
+            }
         }
     }
 
-    public function getDataList()
+
+    public function getDataList($table, $whereArr, $debug = false)
     {
+
 
     }
 
-    public function getDataOne()
+    /**
+     * 从数据库中查询一条数据
+     * @param $table
+     * @param $filed
+     * @param $whereArr
+     * @param bool $debug
+     * @return mixed|string
+     */
+    public function getDataOne($table, $filed, $whereArr, $debug = false,$fetchStyle=PDO::FETCH_ASSOC)
     {
+        $this->checkParams(['table', 'where'], 'empty');
+
+        $this->setTable($table);
+        $this->setFiled($filed);
+
+        $whereStr = '';
+        $whereArrNew = [];
+        $bindArr = [];
+        foreach ($whereArr as $key => $value) {
+            $bingKey = ":" . $key;
+            $whereArrNew[] = $key . '=' . $bingKey;
+            $bindArr[$bingKey] = $value;
+        }
+        $whereStr = implode(' and ', $whereArrNew);
+
+        $sql = "SELECT {$this->filed} FROM {$this->table} WHERE " . $whereStr . " LIMIT 1";
+
+        if ($debug) {
+            return $sql;
+        } else {
+            $podStatement = $this->db->prepare($sql);
+            $data = $podStatement->execute($bindArr);
+            if ($data) {
+                return $podStatement->fetch($fetchStyle);
+            }
+        }
 
     }
 
-    public function updateData()
+    /**
+     * 更新一条数据对象 成功返回影响的行数
+     * @param  string $table      表名
+     * @param  array  $setArr     设置的新值
+     * @param  array  $whereArr   设置的条件
+     * @param  bool   $debug      是否开启调试模式
+     * @return array|int|string
+     */
+    public function updateData($table, $setArr, $whereArr, $debug = false)
     {
+        $this->checkParams(['table,setArr,whereArr'], 'empty');
+        $this->setTable($table);
+        $whereStr = '';
+        $whereArrNew = [];
+        $bindArr = [];
+        foreach ($whereArr as $key => $value) {
+            $bingKey = ":" . $key;
+            $whereArrNew[] = $key . '=' . $bingKey;
+            $bindArr[$bingKey] = $value;
+        }
+        $whereStr = implode(' and ', $whereArrNew);
 
+        $setStr = '';
+        $setArrNew = [];
+        foreach ($setArr as $key => $value) {
+            $bingKey = ":" . $key;
+            $setArrNew[] = "`".$key."`" . "='" . $value."'";
+        }
+        $setStr = implode(',', $setArrNew);
+
+        $sql = "UPDATE  {$this->table} SET $setStr WHERE ".$whereStr;
+
+        if($debug){
+            return $sql;
+        }else{
+            $pdoStatement = $this->db->prepare($sql);
+            $upStatus = $pdoStatement->execute($bindArr);
+            if($upStatus){
+                return $pdoStatement->rowCount();
+            }else{
+                return $pdoStatement->errorInfo();
+            }
+        }
     }
 
     protected function checkParams()
