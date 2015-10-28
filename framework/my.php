@@ -2,7 +2,11 @@
 /**
  * 框架入口文件
  */
-define('MY_BASE_PATH', dirname(__FILE__));
+//设置框架的根目录
+defined('MY_BASE_PATH') or define('MY_BASE_PATH', dirname(__FILE__));
+
+//是否开启调试模式
+defined('MY_DEBUG') or define('MY_DEBUG', false);
 
 class my
 {

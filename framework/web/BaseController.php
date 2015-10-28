@@ -1,7 +1,27 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2015/10/27
- * Time: 15:11
- */ 
+ * 控制器基类
+ */
+class  BaseController
+{
+    protected $contName;
+    protected $contAction;
+    protected $route;
+
+    protected function init()
+    {
+
+    }
+
+    protected function after()
+    {
+
+    }
+
+    protected function render()
+    {
+
+    }
+
+}
